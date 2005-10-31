@@ -1,0 +1,10 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1390
+
+This script will cause your backspace key to delete all the whitespace characters before the cursor when the cursor is on a whitespace character.
+
+For example, if you typed "x       x" and then hit backspace twice, you'd only have "x".  This can be especially useful when auto/smart/c/expression indenting is on.
+
+This script isn't very useful if you don't put "set backspace=indent,eol,start" or at least "set backsapce=indent,start" in your vimrc.
+
+
+(Thanks to Tomi Mickelsson for testing and bug reports.)
