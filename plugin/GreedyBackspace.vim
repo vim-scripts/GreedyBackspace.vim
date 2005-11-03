@@ -1,10 +1,22 @@
-function! GreedyBackspace()
+" GreedyBackspace.vim  -  Make backspace eat multiple whitespace characters.
+"
+" Copyrright October 2005 by Christian J. Robinson <infynity@onewest.net>
+"
+" Distributed under the terms of the Vim license.  See ":help license".
+"
+" This script isn't very useful if you don't put
+"   set backspace=indent,eol,start
+" or at least
+"   set backsapce=indent,start
+" in your vimrc.
+
+function! s:GreedyBackspace()
 	let bs = ''
 
-	let offset = s:ByteOffset()
+	let offset = s:ByteOffset() - 1
 	let c = s:GetChar(offset)
 
-    if (c !~ '\s' )
+	if c !~ '\s'
 		return "\<BS>"
 	endif
 
@@ -27,8 +39,8 @@ endfunction
 function! s:GetChar(offset)
 	let line = byte2line(a:offset)
 	let char = a:offset - line2byte(line)
-	let c = getline(line)[char - 1]
+	let c = getline(line)[char]
 	return c
 endfunction
 
-inoremap <silent> <BS> <C-R>=GreedyBackspace()<CR>
+inoremap <silent> <BS> <C-R>=<SID>GreedyBackspace()<CR>
