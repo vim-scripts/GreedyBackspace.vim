@@ -9,6 +9,9 @@
 " or at least
 "   set backsapce=indent,start
 " in your vimrc.
+"
+" You can do ":let g:greedybackspacenl = 1" to make this script eat newlines as
+" well.
 
 function! s:GreedyBackspace()
 	let bs = ''
@@ -20,7 +23,7 @@ function! s:GreedyBackspace()
 		return "\<BS>"
 	endif
 
-	while c =~ '\s'
+	while c =~ '\s' || exists('g:greedybackspacenl') && g:greedybackspacenl != 0 && c == "\0"
 		let bs = bs . "\<BS>"
 		let offset = offset - 1
 		if (offset <= 1)
@@ -43,4 +46,15 @@ function! s:GetChar(offset)
 	return c
 endfunction
 
-inoremap <silent> <BS> <C-R>=<SID>GreedyBackspace()<CR>
+" The 'smarttab' option can cause problems, so just disable it while
+" backspacing:
+function! s:ST(t)
+  if a:t == 0
+    let s:savesta=&sta | let &l:sta=0
+  else
+    let &l:sta=s:savesta | unlet s:savesta
+  endif
+  return ''
+endfunction
+
+inoremap <silent> <BS> <C-R>=<SID>ST(0)<CR><C-R>=<SID>GreedyBackspace()<CR><C-R>=<SID>ST(1)<CR>
