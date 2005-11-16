@@ -10,8 +10,10 @@
 "   set backsapce=indent,start
 " in your vimrc.
 "
-" You can do ":let g:greedybackspacenl = 1" to make this script eat newlines as
-" well.
+" You can do ":let g:greedybackspacenl = 1" to make this script eat newlines
+" as well (be sure you do include "eol" in your 'backspace' option).
+" -----------------------------------------------------------------------------
+" $Id: GreedyBackspace.vim,v 1.3 2005/11/17 04:56:37 infynity Exp $
 
 function! s:GreedyBackspace()
 	let bs = ''
@@ -19,7 +21,7 @@ function! s:GreedyBackspace()
 	let offset = s:ByteOffset() - 1
 	let c = s:GetChar(offset)
 
-	if c !~ '\s'
+	if ! (c =~ '\s' || exists('g:greedybackspacenl') && g:greedybackspacenl != 0 && c == "\0")
 		return "\<BS>"
 	endif
 
@@ -48,13 +50,15 @@ endfunction
 
 " The 'smarttab' option can cause problems, so just disable it while
 " backspacing:
-function! s:ST(t)
+function! s:TO(t)
   if a:t == 0
     let s:savesta=&sta | let &l:sta=0
+	"let s:savebs=&bs | let &bs='indent,eol,start'
   else
     let &l:sta=s:savesta | unlet s:savesta
+	"let &bs=s:savebs | unlet s:savebs
   endif
   return ''
 endfunction
 
-inoremap <silent> <BS> <C-R>=<SID>ST(0)<CR><C-R>=<SID>GreedyBackspace()<CR><C-R>=<SID>ST(1)<CR>
+inoremap <silent> <BS> <C-R>=<SID>TO(0)<CR><C-R>=<SID>GreedyBackspace()<CR><C-R>=<SID>TO(1)<CR>
