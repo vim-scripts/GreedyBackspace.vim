@@ -13,7 +13,7 @@
 " You can do ":let g:greedybackspacenl = 1" to make this script eat newlines
 " as well (be sure you do include "eol" in your 'backspace' option).
 " -----------------------------------------------------------------------------
-" $Id: GreedyBackspace.vim,v 1.3 2005/11/17 04:56:37 infynity Exp $
+" $Id: GreedyBackspace.vim,v 1.4 2005/11/19 08:09:21 infynity Exp $
 
 function! s:GreedyBackspace()
 	let bs = ''
@@ -26,6 +26,10 @@ function! s:GreedyBackspace()
 	endif
 
 	while c =~ '\s' || exists('g:greedybackspacenl') && g:greedybackspacenl != 0 && c == "\0"
+		if c == "\0" && &fileformat == 'dos'
+			let offset = offset - 1
+		endif
+
 		let bs = bs . "\<BS>"
 		let offset = offset - 1
 		if (offset <= 1)
@@ -48,14 +52,16 @@ function! s:GetChar(offset)
 	return c
 endfunction
 
-" The 'smarttab' option can cause problems, so just disable it while
-" backspacing:
+" Some options can cause problems, so reset them and use the 'paste' option
+" temporarily:
 function! s:TO(t)
   if a:t == 0
     let s:savesta=&sta | let &l:sta=0
+	let s:savepaste=&paste | let &paste=0
 	"let s:savebs=&bs | let &bs='indent,eol,start'
   else
     let &l:sta=s:savesta | unlet s:savesta
+	let &paste=s:savepaste | unlet s:savepaste
 	"let &bs=s:savebs | unlet s:savebs
   endif
   return ''
