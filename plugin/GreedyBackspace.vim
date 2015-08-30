@@ -67,4 +67,6 @@ function! s:TO(t)
   return ''
 endfunction
 
-inoremap <silent> <BS> <C-R>=<SID>TO(0)<CR><C-R>=<SID>GreedyBackspace()<CR><C-R>=<SID>TO(1)<CR>
+if &filetype!='python'
+    inoremap <silent> <BS> <C-R>=<SID>TO(0)<CR><C-R>=<SID>GreedyBackspace()<CR><C-R>=<SID>TO(1)<CR>
+endif
